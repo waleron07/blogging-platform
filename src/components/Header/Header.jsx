@@ -62,7 +62,7 @@ const Header = ({ setLoginFailure, history }) => {
 
   return (
     <div className="header">
-      {getAurorisation === 'autorization'
+      {getAurorisation() === 'autorization'
         ? returnAutorization()
         : returnNotAutorization()}
     </div>
