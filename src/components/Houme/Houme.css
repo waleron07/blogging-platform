@@ -1,0 +1,31 @@
+.wrapper__houme {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 250px;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  width: 100%;
+  text-align: center;
+  background-color: #1890ff;
+  color: #ffffff;
+}
+
+.houme__btn {
+  margin-left: 10px;
+  border-radius: 5px;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: #ffffff;
+  margin: 20px;
+}
+
+.houme__btn:hover {
+  background-color: #67a4dd;
+  border-color: #67a4dd;
+  color: #ffffff;
+}
