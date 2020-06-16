@@ -10,11 +10,14 @@ import FormAutorization from '../Form-autorisation';
 import Houme from '../Houme';
 import * as actions from '../../redux/actions';
 
-const App = ({ isLogin, history, getAutorizations }) => {
+const App = ({
+  isLogin, history, getAutorizations, setLoginSuccess,
+}) => {
   const updatePath = () => {
     const token = localStorage.getItem('token');
     if (token) {
       getAutorizations(history);
+      setLoginSuccess();
     } else {
       history.push('/blogging-platform/signup');
     }
@@ -53,6 +56,7 @@ const mapStateToProps = (state) => {
 
 const actionCreators = {
   getAutorizations: actions.getAutorizations,
+  setLoginSuccess: actions.setLoginSuccess,
 };
 
 App.propTypes = {
@@ -60,6 +64,7 @@ App.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   history: PropTypes.object.isRequired,
   getAutorizations: PropTypes.func.isRequired,
+  setLoginSuccess: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(App);

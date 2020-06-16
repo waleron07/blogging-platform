@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { getLogin } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
-import { clearLocalstoge } from '../../helpers-localstorege';
+import { clearLocalstoge, getAurorisation } from '../../helpers-localstorege';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -19,7 +19,7 @@ const actionCreators = {
   setLoginFailure: actions.setLoginFailure,
 };
 
-const Header = ({ isLogin, setLoginFailure, history }) => {
+const Header = ({ setLoginFailure, history }) => {
   const handleClickExit = () => {
     setLoginFailure();
     clearLocalstoge();
@@ -28,10 +28,12 @@ const Header = ({ isLogin, setLoginFailure, history }) => {
   const mappincButton = {
     bloggingplatformlogin: 'Регистрация',
     bloggingplatformsignup: 'Вход',
+    bloggingplatformhoume: 'Регистрация',
   };
   const mappincLinc = {
     bloggingplatformlogin: '/blogging-platform/signup',
     bloggingplatformsignup: '/blogging-platform/login',
+    bloggingplatformhoume: '/blogging-platform/login',
     bloggingplatform: '/blogging-platform/login',
   };
 
@@ -60,13 +62,14 @@ const Header = ({ isLogin, setLoginFailure, history }) => {
 
   return (
     <div className="header">
-      {isLogin ? returnAutorization() : returnNotAutorization()}
+      {getAurorisation === 'autorization'
+        ? returnAutorization()
+        : returnNotAutorization()}
     </div>
   );
 };
 
 Header.propTypes = {
-  isLogin: PropTypes.bool.isRequired,
   setLoginFailure: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   history: PropTypes.object.isRequired,

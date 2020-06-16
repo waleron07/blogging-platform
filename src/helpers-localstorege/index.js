@@ -14,3 +14,8 @@ export const getHeader = () => {
 export const clearLocalstoge = () => {
   localStorage.clear();
 };
+
+export const getAurorisation = () => {
+  const header = getHeader();
+  return header === null ? 'noutAutorization' : 'autorization';
+};
