@@ -50,9 +50,9 @@ const actionCreators = {
 const FormRegistration = ({ setRegistrations, history }) => {
   const classes = useStyles();
   const initialValues = {
-    username: 'waleron',
-    email: 'sbsqwer@mail.ru',
-    password: 'Qwerty123456',
+    username: '',
+    email: '',
+    password: '',
   };
 
   return (

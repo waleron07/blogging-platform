@@ -51,8 +51,8 @@ const FormAutorization = ({ setAutorizations, history }) => {
   const classes = useStyles();
 
   const initialValues = {
-    email: 'sbsqwer@mail.ru',
-    password: 'Qwerty123456',
+    email: '',
+    password: '',
   };
 
   return (
