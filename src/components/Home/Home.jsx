@@ -3,25 +3,25 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
-import { getLoginData } from '../../redux/selectors';
+import { getUsername } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
-import './Houme.css';
-import { clearLocalstoge } from '../../helpers-localstorege';
+import './Home.css';
+import { clearLocalstoge } from '../../utils';
 
 const mapStateToProps = (state) => {
   const props = {
-    loginData: getLoginData(state),
+    username: getUsername(state),
   };
   return props;
 };
 
 const actionCreators = {
-  setLoginFailure: actions.setLoginFailure,
+  setLoginExit: actions.setLoginExit,
 };
 
-const Houme = ({ loginData: { username }, setLoginFailure }) => {
+const Houme = ({ username, setLoginExit }) => {
   const handleClick = () => {
-    setLoginFailure();
+    setLoginExit();
     clearLocalstoge();
   };
 
@@ -37,9 +37,8 @@ const Houme = ({ loginData: { username }, setLoginFailure }) => {
 };
 
 Houme.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  loginData: PropTypes.object.isRequired,
-  setLoginFailure: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  setLoginExit: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(Houme);

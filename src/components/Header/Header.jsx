@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { getLogin } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
-import { clearLocalstoge, getAurorisation } from '../../helpers-localstorege';
+import { clearLocalstoge } from '../../utils';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -16,25 +16,13 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  setLoginFailure: actions.setLoginFailure,
+  setLoginExit: actions.setLoginExit,
 };
 
-const Header = ({ setLoginFailure, history }) => {
+const Header = ({ setLoginExit, history, isLogin }) => {
   const handleClickExit = () => {
-    setLoginFailure();
+    setLoginExit();
     clearLocalstoge();
-  };
-
-  const mappincButton = {
-    bloggingplatformlogin: 'Регистрация',
-    bloggingplatformsignup: 'Вход',
-    bloggingplatformhoume: 'Регистрация',
-  };
-  const mappincLinc = {
-    bloggingplatformlogin: '/blogging-platform/signup',
-    bloggingplatformsignup: '/blogging-platform/login',
-    bloggingplatformhoume: '/blogging-platform/login',
-    bloggingplatform: '/blogging-platform/login',
   };
 
   const returnAutorization = () => (
@@ -47,14 +35,14 @@ const Header = ({ setLoginFailure, history }) => {
 
   const returnNotAutorization = () => {
     const { pathname } = history.location;
-    const newPathname = pathname.replace(/[/,-]/g, '');
-
+    const link = pathname === '/blogging-platform/signup'
+      ? '/blogging-platform/login'
+      : '/blogging-platform/signup';
+    const buttonValue = pathname === '/blogging-platform/signup' ? 'Вход' : 'Регистрация';
     return (
       <>
         <Button className="header__btn">
-          <NavLink to={mappincLinc[newPathname]}>
-            {mappincButton[newPathname]}
-          </NavLink>
+          <NavLink to={link}>{buttonValue}</NavLink>
         </Button>
       </>
     );
@@ -62,17 +50,20 @@ const Header = ({ setLoginFailure, history }) => {
 
   return (
     <div className="header">
-      {getAurorisation() === 'autorization'
-        ? returnAutorization()
-        : returnNotAutorization()}
+      {isLogin ? returnAutorization() : returnNotAutorization()}
     </div>
   );
 };
 
 Header.propTypes = {
-  setLoginFailure: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
+  setLoginExit: PropTypes.func.isRequired,
+  history: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+  isLogin: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(Header);

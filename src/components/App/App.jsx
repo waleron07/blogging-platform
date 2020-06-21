@@ -1,22 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import './App.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 import Header from '../Header';
-import { getLogin, getSignUp, getLoginData } from '../../redux/selectors';
-import FormRegistration from '../Form-registration';
-import FormAutorization from '../Form-autorisation';
-import Houme from '../Houme';
+import { getLogin } from '../../redux/selectors';
+import FormRegistration from '../form-registration';
+import FormAutorization from '../form-autorisation';
+import Houme from '../Home';
 import * as actions from '../../redux/actions';
 
 const App = ({
-  isLogin, history, getAutorizations, setLoginSuccess,
+  isLogin, history, getUser, setLoginSuccess,
 }) => {
-  const updatePath = () => {
+  const fetchPath = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      getAutorizations(history);
+      getUser(history);
       setLoginSuccess();
     } else {
       history.push('/blogging-platform/signup');
@@ -24,8 +25,7 @@ const App = ({
   };
 
   useEffect(() => {
-    updatePath();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchPath();
   }, [isLogin]);
 
   return (
@@ -48,22 +48,24 @@ const App = ({
 const mapStateToProps = (state) => {
   const props = {
     isLogin: getLogin(state),
-    isSignUp: getSignUp(state),
-    loginData: getLoginData(state),
   };
   return props;
 };
 
 const actionCreators = {
-  getAutorizations: actions.getAutorizations,
+  getUser: actions.getUser,
   setLoginSuccess: actions.setLoginSuccess,
 };
 
 App.propTypes = {
   isLogin: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
-  getAutorizations: PropTypes.func.isRequired,
+  history: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.func,
+    PropTypes.object,
+  ]).isRequired,
+  getUser: PropTypes.func.isRequired,
   setLoginSuccess: PropTypes.func.isRequired,
 };
 

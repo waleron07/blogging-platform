@@ -6,8 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { getLogin, getSignUp } from '../../redux/selectors';
-import { validationSchemaRegistration } from '../../heleper-vadalition/vadalition';
+import { getLogin, getIsRequest } from '../../redux/selectors';
+import validationSchema from './vadalition';
 import * as actions from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +41,18 @@ const useStyles = makeStyles((theme) => ({
   registration__data: {
     marginBottom: theme.spacing(2),
   },
+
+  error__internet: {
+    textAlign: 'center',
+    color: 'red',
+  },
 }));
 
 const actionCreators = {
-  setRegistrations: actions.setRegistrations,
+  registration: actions.registration,
 };
 
-const FormRegistration = ({ setRegistrations, history }) => {
+const FormRegistration = ({ registration, isRequest }) => {
   const classes = useStyles();
   const initialValues = {
     username: '',
@@ -60,9 +65,9 @@ const FormRegistration = ({ setRegistrations, history }) => {
       <h1 className={classes.title}>регистрация</h1>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchemaRegistration}
+        validationSchema={validationSchema}
         onSubmit={(values, { setFieldError }) => {
-          setRegistrations(values, setFieldError, history);
+          registration(values, setFieldError);
         }}
       >
         {({
@@ -72,6 +77,8 @@ const FormRegistration = ({ setRegistrations, history }) => {
           handleBlur,
           handleChange,
           values,
+          dirty,
+          isValid,
         }) => (
           <Form className={classes.registration} onSubmit={handleSubmit}>
             <Field
@@ -88,6 +95,7 @@ const FormRegistration = ({ setRegistrations, history }) => {
               onBlur={handleBlur('username')}
               required
               value={values.username}
+              disabled={isRequest}
             />
             <Field
               size="small"
@@ -103,6 +111,7 @@ const FormRegistration = ({ setRegistrations, history }) => {
               onBlur={handleBlur('email')}
               required
               value={values.email}
+              disabled={isRequest}
             />
             <Field
               size="small"
@@ -120,14 +129,20 @@ const FormRegistration = ({ setRegistrations, history }) => {
               fullWidth
               required
               value={values.password}
+              disabled={isRequest}
             />
             <Button
               htmlType="submit"
               type="primary"
-              disabled={Object.keys(errors).length > 0 ? 'disabled' : null}
+              disabled={!isValid || !dirty || isRequest}
             >
               Зарегистрироваться
             </Button>
+            {errors.errorName && (
+              <span className={classes.error__internet}>
+                {errors.errorName}
+              </span>
+            )}
           </Form>
         )}
       </Formik>
@@ -139,15 +154,14 @@ const FormRegistration = ({ setRegistrations, history }) => {
 const mapStateToProps = (state) => {
   const props = {
     isLogin: getLogin(state),
-    isSignUp: getSignUp(state),
+    isRequest: getIsRequest(state),
   };
   return props;
 };
 
 FormRegistration.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
-  setRegistrations: PropTypes.func.isRequired,
+  registration: PropTypes.func.isRequired,
+  isRequest: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormRegistration);

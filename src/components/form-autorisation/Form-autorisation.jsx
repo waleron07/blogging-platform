@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -6,8 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { validationSchemaAutorisation } from '../../heleper-vadalition/vadalition';
-import { getLogin, getSignUp } from '../../redux/selectors';
+import { getLogin, getIsRequest } from '../../redux/selectors';
+import validationSchema from './vadalition';
 import * as actions from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +42,18 @@ const useStyles = makeStyles((theme) => ({
   registration__data: {
     marginBottom: theme.spacing(2),
   },
+
+  error__internet: {
+    textAlign: 'center',
+    color: 'red',
+  },
 }));
 
 const actionCreators = {
-  setAutorizations: actions.setAutorizations,
+  authorization: actions.authorization,
 };
 
-const FormAutorization = ({ setAutorizations, history }) => {
+const FormAutorization = ({ authorization, isRequest }) => {
   const classes = useStyles();
 
   const initialValues = {
@@ -60,9 +66,9 @@ const FormAutorization = ({ setAutorizations, history }) => {
       <h1 className={classes.title}>Авторизация</h1>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchemaAutorisation}
+        validationSchema={validationSchema}
         onSubmit={(values, { setFieldError }) => {
-          setAutorizations(values, setFieldError, history);
+          authorization(values, setFieldError);
         }}
       >
         {({
@@ -72,6 +78,8 @@ const FormAutorization = ({ setAutorizations, history }) => {
           handleBlur,
           handleChange,
           values,
+          isValid,
+          dirty,
         }) => (
           <Form className={classes.registration} onSubmit={handleSubmit}>
             <Field
@@ -88,6 +96,7 @@ const FormAutorization = ({ setAutorizations, history }) => {
               onBlur={handleBlur('email')}
               required
               value={values.email}
+              disabled={isRequest}
             />
             <Field
               size="small"
@@ -105,14 +114,20 @@ const FormAutorization = ({ setAutorizations, history }) => {
               fullWidth
               required
               value={values.password}
+              disabled={isRequest}
             />
             <Button
               htmlType="submit"
               type="primary"
-              disabled={Object.keys(errors).length > 0 ? 'disabled' : null}
+              disabled={!isValid || !dirty || isRequest}
             >
               Вход
             </Button>
+            {errors.errorName && (
+              <span className={classes.error__internet}>
+                {errors.errorName}
+              </span>
+            )}
           </Form>
         )}
       </Formik>
@@ -124,17 +139,15 @@ const FormAutorization = ({ setAutorizations, history }) => {
 const mapStateToProps = (state) => {
   const props = {
     isLogin: getLogin(state),
-    isSignUp: getSignUp(state),
+    isRequest: getIsRequest(state),
   };
   return props;
 };
 
 FormAutorization.propTypes = {
-  // eslint-disable-next-line react/no-unused-prop-types
   isLogin: PropTypes.bool.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
-  setAutorizations: PropTypes.func.isRequired,
+  isRequest: PropTypes.bool.isRequired,
+  authorization: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormAutorization);
