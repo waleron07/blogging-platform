@@ -24,7 +24,7 @@ export const getUser = (history) => async (dispatch) => {
     const response = await userRequest(getToken());
     dispatch(setUserSuccess());
     dispatch(loginData(response.data));
-    history.push('/blogging-platform/houme');
+    history.push('/blogging-platform/home');
   } catch (error) {
     dispatch(setUserFailure());
     history.push('/blogging-platform/signup');
