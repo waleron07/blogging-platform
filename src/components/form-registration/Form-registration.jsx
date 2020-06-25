@@ -5,10 +5,12 @@ import { Formik, Form, Field } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
+import './form-registration.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { getLogin, getIsRequest } from '../../redux/selectors';
+import { getBlockingForm } from '../../redux/selectors';
 import validationSchema from './vadalition';
 import * as actions from '../../redux/actions';
+import { getLogin } from '../../utils/route';
 
 const useStyles = makeStyles((theme) => ({
   wrapper__registration: {
@@ -52,12 +54,34 @@ const actionCreators = {
   registration: actions.registration,
 };
 
-const FormRegistration = ({ registration, isRequest }) => {
+const FormRegistration = ({ registration, isBlockingForm }) => {
   const classes = useStyles();
   const initialValues = {
     username: '',
     email: '',
     password: '',
+  };
+
+  const handleSubmitRegistration = async (values, { setFieldError }) => {
+    try {
+      await registration(values, setFieldError);
+    } catch (error) {
+      if (error.response === undefined && error.isAxiosError) {
+        setFieldError('errorName', 'Нет подключения к интернету');
+      }
+      if (error.response.data.errors.username) {
+        setFieldError(
+          'username',
+          'Пользователь с таким именем уже зарегистрирован',
+        );
+      }
+      if (error.response.data.errors.email) {
+        setFieldError(
+          'email',
+          'Пользователь с такой почтой уже зарегистрирован',
+        );
+      }
+    }
   };
 
   return (
@@ -66,9 +90,7 @@ const FormRegistration = ({ registration, isRequest }) => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, { setFieldError }) => {
-          registration(values, setFieldError);
-        }}
+        onSubmit={handleSubmitRegistration}
       >
         {({
           touched,
@@ -95,7 +117,7 @@ const FormRegistration = ({ registration, isRequest }) => {
               onBlur={handleBlur('username')}
               required
               value={values.username}
-              disabled={isRequest}
+              disabled={isBlockingForm}
             />
             <Field
               size="small"
@@ -111,7 +133,7 @@ const FormRegistration = ({ registration, isRequest }) => {
               onBlur={handleBlur('email')}
               required
               value={values.email}
-              disabled={isRequest}
+              disabled={isBlockingForm}
             />
             <Field
               size="small"
@@ -129,12 +151,12 @@ const FormRegistration = ({ registration, isRequest }) => {
               fullWidth
               required
               value={values.password}
-              disabled={isRequest}
+              disabled={isBlockingForm}
             />
             <Button
               htmlType="submit"
               type="primary"
-              disabled={!isValid || !dirty || isRequest}
+              disabled={!isValid || !dirty || isBlockingForm}
             >
               Зарегистрироваться
             </Button>
@@ -146,22 +168,21 @@ const FormRegistration = ({ registration, isRequest }) => {
           </Form>
         )}
       </Formik>
-      <NavLink to="/blogging-platform/login">Войти</NavLink>
+      <NavLink to={getLogin()}>Войти</NavLink>
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   const props = {
-    isLogin: getLogin(state),
-    isRequest: getIsRequest(state),
+    isBlockingForm: getBlockingForm(state),
   };
   return props;
 };
 
 FormRegistration.propTypes = {
   registration: PropTypes.func.isRequired,
-  isRequest: PropTypes.bool.isRequired,
+  isBlockingForm: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormRegistration);

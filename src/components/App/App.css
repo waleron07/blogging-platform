@@ -3,3 +3,13 @@
   justify-content: center;
   flex-direction: column;
 }
+
+.wrapper_container {
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px;
+}
+
+.sitebar {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}

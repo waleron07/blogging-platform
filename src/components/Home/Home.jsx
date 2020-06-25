@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { getUsername } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
 import './Home.css';
-import { clearLocalstoge } from '../../utils';
+import { clearLocalstoge } from '../../utils/localStorage';
 
 const mapStateToProps = (state) => {
   const props = {

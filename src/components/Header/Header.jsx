@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Route, NavLink, Switch } from 'react-router-dom';
-import { getLogin } from '../../redux/selectors';
+import { getIsAuth } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
-import { clearLocalstoge } from '../../utils';
+import { clearLocalstoge } from '../../utils/localStorage';
+import { getHome, getLogin, getSignup } from '../../utils/route';
 
 const mapStateToProps = (state) => {
   const props = {
-    isLogin: getLogin(state),
+    isAuth: getIsAuth(state),
   };
   return props;
 };
@@ -27,27 +28,27 @@ const Header = ({ setLoginExit }) => {
 
   const Login = () => (
     <Button className="header__btn" onClick={handleClickExit}>
-      <NavLink to="/blogging-platform/login">Войти</NavLink>
+      <NavLink to={getLogin()}>Войти</NavLink>
     </Button>
   );
   const Signup = () => (
     <Button className="header__btn" onClick={handleClickExit}>
-      <NavLink to="/blogging-platform/signup">Регистрация</NavLink>
+      <NavLink to={getSignup()}>Регистрация</NavLink>
     </Button>
   );
 
   const Exit = () => (
     <Button className="header__btn" onClick={handleClickExit}>
-      <NavLink to="/blogging-platform/signup">Выход</NavLink>
+      <NavLink to={getSignup()}>Выход</NavLink>
     </Button>
   );
 
   return (
     <div className="header">
       <Switch>
-        <Route path="/blogging-platform/signup" component={Login} />
-        <Route path="/blogging-platform/login" component={Signup} />
-        <Route path="/blogging-platform/home" component={Exit} />
+        <Route path={getSignup()} component={Login} />
+        <Route path={getLogin()} component={Signup} />
+        <Route path={getHome()} component={Exit} />
       </Switch>
     </div>
   );

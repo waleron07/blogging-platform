@@ -11,7 +11,7 @@ const username = handleActions(
   '',
 );
 
-const isLogin = handleActions(
+const isAuth = handleActions(
   {
     [actions.setLoginSuccess]() {
       return true;
@@ -38,7 +38,7 @@ const isLogin = handleActions(
   false,
 );
 
-const isRequest = handleActions(
+const isBlockingForm = handleActions(
   {
     [actions.setLoginRequest]() {
       return true;
@@ -63,7 +63,7 @@ const isRequest = handleActions(
 );
 
 export default combineReducers({
-  isLogin,
+  isAuth,
   username,
-  isRequest,
+  isBlockingForm,
 });

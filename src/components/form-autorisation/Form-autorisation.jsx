@@ -6,10 +6,12 @@ import { Formik, Form, Field } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
+import './form-autorization.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { getLogin, getIsRequest } from '../../redux/selectors';
+import { getBlockingForm } from '../../redux/selectors';
 import validationSchema from './vadalition';
 import * as actions from '../../redux/actions';
+import { getSignup } from '../../utils/route';
 
 const useStyles = makeStyles((theme) => ({
   wrapper__registration: {
@@ -53,12 +55,25 @@ const actionCreators = {
   authorization: actions.authorization,
 };
 
-const FormAutorization = ({ authorization, isRequest }) => {
+const FormAutorization = ({ authorization, isBlockingForm }) => {
   const classes = useStyles();
 
   const initialValues = {
     email: '',
     password: '',
+  };
+
+  const handleSubmitAutorization = async (values, setFieldError) => {
+    try {
+      await authorization(values, setFieldError);
+    } catch (error) {
+      if (error.response === undefined && error.isAxiosError) {
+        setFieldError('errorName', 'Нет подключения к интернету');
+      } else {
+        setFieldError('password', 'Почта или пароль неверны');
+        setFieldError('email', 'Почта или пароль неверны');
+      }
+    }
   };
 
   return (
@@ -68,7 +83,7 @@ const FormAutorization = ({ authorization, isRequest }) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, { setFieldError }) => {
-          authorization(values, setFieldError);
+          handleSubmitAutorization(values, setFieldError);
         }}
       >
         {({
@@ -96,7 +111,7 @@ const FormAutorization = ({ authorization, isRequest }) => {
               onBlur={handleBlur('email')}
               required
               value={values.email}
-              disabled={isRequest}
+              disabled={isBlockingForm}
             />
             <Field
               size="small"
@@ -114,12 +129,12 @@ const FormAutorization = ({ authorization, isRequest }) => {
               fullWidth
               required
               value={values.password}
-              disabled={isRequest}
+              disabled={isBlockingForm}
             />
             <Button
               htmlType="submit"
               type="primary"
-              disabled={!isValid || !dirty || isRequest}
+              disabled={!isValid || !dirty || isBlockingForm}
             >
               Вход
             </Button>
@@ -131,22 +146,20 @@ const FormAutorization = ({ authorization, isRequest }) => {
           </Form>
         )}
       </Formik>
-      <NavLink to="/blogging-platform/signup">Зарегистрироваться</NavLink>
+      <NavLink to={getSignup()}>Зарегистрироваться</NavLink>
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   const props = {
-    isLogin: getLogin(state),
-    isRequest: getIsRequest(state),
+    isBlockingForm: getBlockingForm(state),
   };
   return props;
 };
 
 FormAutorization.propTypes = {
-  isLogin: PropTypes.bool.isRequired,
-  isRequest: PropTypes.bool.isRequired,
+  isBlockingForm: PropTypes.bool.isRequired,
   authorization: PropTypes.func.isRequired,
 };
 

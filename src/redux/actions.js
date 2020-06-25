@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions';
 import { loginRequest, signupRequest, userRequest } from '../api/index';
-import { getToken } from '../utils';
+import { setToken } from '../utils/localStorage';
+import { getHome, getSignup } from '../utils/route';
 
 export const setSignUpRequest = createAction('STATUS_SIGNUP_REQUEST');
 export const setSignUpSuccess = createAction('STATUS_SIGNUP_SUCCESS');
@@ -21,53 +22,40 @@ export const getRequest = createAction('REQUEST_DATA');
 export const getUser = (history) => async (dispatch) => {
   dispatch(setUserRequest());
   try {
-    const response = await userRequest(getToken());
+    const response = await userRequest();
     dispatch(setUserSuccess());
     dispatch(loginData(response.data));
-    history.push('/blogging-platform/home');
+    history.push(getHome());
   } catch (error) {
     dispatch(setUserFailure());
-    history.push('/blogging-platform/signup');
+    history.push(getSignup());
   }
 };
 
-export const authorization = (values, setFieldError) => async (dispatch) => {
+export const authorization = (values) => async (dispatch) => {
   dispatch(setSignUpRequest());
   try {
     const response = await signupRequest(values);
-    dispatch(setSignUpSuccess());
     const { token } = response.data.user;
-    localStorage.setItem('token', `${token}`);
+    setToken(token);
+    dispatch(setSignUpSuccess());
   } catch (error) {
     dispatch(setSignUpFailure());
-    if (error.response === undefined && error.isAxiosError) {
-      setFieldError('errorName', 'Нет подключения к интернету');
-    } else {
-      setFieldError('password', 'Почта или пароль неверны');
-      setFieldError('email', 'Почта или пароль неверны');
-    }
+    throw error;
   }
 };
 
-export const registration = (values, setFieldError) => async (dispatch) => {
+export const registration = (values) => async (dispatch) => {
   dispatch(setLoginRequest());
   try {
     const response = await loginRequest(values);
     if (response.status === 200) {
-      dispatch(setLoginSuccess());
       const { token } = response.data.user;
       localStorage.setItem('token', `${token}`);
+      dispatch(setLoginSuccess());
     }
   } catch (error) {
     dispatch(setLoginFailure());
-    if (error.response === undefined && error.isAxiosError) {
-      setFieldError('errorName', 'Нет подключения к интернету');
-    } else {
-      setFieldError(
-        'username',
-        'Пользователь с таким именем уже зарегистрирован',
-      );
-      setFieldError('email', 'Пользователь с такой почтой уже зарегистрирован');
-    }
+    throw error;
   }
 };
