@@ -7,6 +7,7 @@ import { getUsername } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
 import './Home.css';
 import { clearLocalstoge } from '../../utils/localStorage';
+import { getAdd, getLogin, getBlogging } from '../../utils/route';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -17,20 +18,49 @@ const mapStateToProps = (state) => {
 
 const actionCreators = {
   setLoginExit: actions.setLoginExit,
+  getArticles: actions.getArticles,
+  userArticles: actions.userArticles,
 };
 
-const Houme = ({ username, setLoginExit }) => {
-  const handleClick = () => {
+const Houme = ({
+  username, setLoginExit, getArticles, userArticles,
+}) => {
+  const handleClickExit = () => {
     setLoginExit();
     clearLocalstoge();
+  };
+
+  const handleClickAllArticles = () => {
+    getArticles();
+  };
+
+  const handleClickUserArticles = () => {
+    userArticles(username);
   };
 
   return (
     <div className="wrapper__houme">
       <h1 className="title">Личный кабинет</h1>
       <span className="name">{username}</span>
-      <Button className="houme__btn" onClick={handleClick}>
-        <NavLink to="/blogging-platform/login">Выход</NavLink>
+      <div className="houme__block__btn">
+        <Button
+          className="houme__btn__articles"
+          onClick={handleClickAllArticles}
+        >
+          <NavLink to={getBlogging()}>Показать все статьи</NavLink>
+        </Button>
+        <Button
+          className="houme__btn__articles"
+          onClick={handleClickUserArticles}
+        >
+          <NavLink to={getBlogging()}>Показать мои статьи</NavLink>
+        </Button>
+        <Button className="houme__btn__articles">
+          <NavLink to={getAdd()}>Добавить статью</NavLink>
+        </Button>
+      </div>
+      <Button className="houme__btn__exit" onClick={handleClickExit}>
+        <NavLink to={getLogin()}>Выход</NavLink>
       </Button>
     </div>
   );
@@ -39,6 +69,8 @@ const Houme = ({ username, setLoginExit }) => {
 Houme.propTypes = {
   username: PropTypes.string.isRequired,
   setLoginExit: PropTypes.func.isRequired,
+  getArticles: PropTypes.func.isRequired,
+  userArticles: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(Houme);

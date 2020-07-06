@@ -2,21 +2,29 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Route, useHistory } from 'react-router-dom';
+import { Route, useHistory, Switch } from 'react-router-dom';
 import './App.css';
 import Header from '../Header';
 import { getIsAuth } from '../../redux/selectors';
-import FormRegistration from '../form-registration';
-import FormAutorization from '../form-autorisation';
-import Articles from '../Articles';
+import FormRegistration from '../forms/form-registration';
+import FormAutorization from '../forms/form-autorisation';
+import FormAddArticle from '../forms/form-add-article';
+import ArticlesList from '../articles/articles-list';
+import ViewArticle from '../articles/view-article';
 import Home from '../Home';
 import { getToken } from '../../utils/localStorage';
 import {
-  getBlogging, getHome, getLogin, getSignup,
+  getBlogging,
+  getLogin,
+  getSignup,
+  getAdd,
+  getSlug,
 } from '../../utils/route';
 import * as actions from '../../redux/actions';
 
-const App = ({ isAuth, getUser, setLoginSuccess }) => {
+const App = ({
+  isAuth, getUser, setLoginSuccess, getArticles,
+}) => {
   const history = useHistory();
 
   const fetchPath = () => {
@@ -24,8 +32,10 @@ const App = ({ isAuth, getUser, setLoginSuccess }) => {
     if (token) {
       getUser(history);
       setLoginSuccess();
+      getArticles();
     } else {
       history.push(getSignup());
+      getArticles();
     }
   };
 
@@ -38,11 +48,17 @@ const App = ({ isAuth, getUser, setLoginSuccess }) => {
       <Route path={getBlogging()} component={Header} />
       <div className="wrapper_container">
         <div className="sitebar">
-          <Route path={getHome()} component={Home} />
+          {isAuth && <Route path={getBlogging()} component={Home} />}
           <Route path={getLogin()} component={FormAutorization} />
           <Route path={getSignup()} component={FormRegistration} />
         </div>
-        <Route path={getBlogging()} component={Articles} />
+        <Switch>
+          <Route exact path={getSlug()} component={ViewArticle} />
+          <Route path={getSignup()} component={ArticlesList} />
+          <Route path={getLogin()} component={ArticlesList} />
+          <Route exact path={getBlogging()} component={ArticlesList} />
+        </Switch>
+        <Route exact path={getAdd()} component={FormAddArticle} />
       </div>
     </div>
   );
@@ -58,12 +74,14 @@ const mapStateToProps = (state) => {
 const actionCreators = {
   getUser: actions.getUser,
   setLoginSuccess: actions.setLoginSuccess,
+  getArticles: actions.getArticles,
 };
 
 App.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   getUser: PropTypes.func.isRequired,
   setLoginSuccess: PropTypes.func.isRequired,
+  getArticles: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(App);

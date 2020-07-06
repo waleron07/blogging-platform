@@ -43,13 +43,22 @@ const isBlockingForm = handleActions(
     [actions.setLoginRequest]() {
       return true;
     },
+    [actions.setCreateArticleRequest]() {
+      return true;
+    },
     [actions.setSignUpRequest]() {
       return true;
     },
     [actions.setUserSuccess]() {
       return false;
     },
+    [actions.setCreateArticleSuccess]() {
+      return false;
+    },
     [actions.setLoginFailure]() {
+      return false;
+    },
+    [actions.setCreateArticleFailure]() {
       return false;
     },
     [actions.setSignUpFailure]() {
@@ -62,7 +71,27 @@ const isBlockingForm = handleActions(
   false,
 );
 
+const articlesList = handleActions(
+  {
+    [actions.articlesData](state, { payload: articles }) {
+      return articles;
+    },
+  },
+  [],
+);
+
+const articleOne = handleActions(
+  {
+    [actions.articleData](state, { payload: article }) {
+      return article;
+    },
+  },
+  [],
+);
+
 export default combineReducers({
+  articlesList,
+  articleOne,
   isAuth,
   username,
   isBlockingForm,

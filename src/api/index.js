@@ -6,9 +6,13 @@ export const baseUrl = 'https://conduit.productionready.io/api/';
 export const instance = axios.create();
 
 instance.interceptors.request.use((config) => {
-  const userConfig = config;
-  userConfig.headers.Authorization = `Token ${getToken()}`;
-  return userConfig;
+  const token = getToken();
+  if (token) {
+    const userConfig = config;
+    userConfig.headers.Authorization = `Token ${getToken()}`;
+    return userConfig;
+  }
+  return config;
 });
 
 export const userRequest = () => {
@@ -42,5 +46,41 @@ export const signupRequest = (values) => {
   };
   const url = `${baseUrl}users/login`;
   const response = axios.post(url, autData);
+  return response;
+};
+
+export const articlesRequest = () => {
+  const url = `${baseUrl}articles?limit=5`;
+  const response = instance.get(url);
+  return response;
+};
+
+export const articleRequest = (slug) => {
+  const url = `${baseUrl}articles/${slug}`;
+  const response = instance.get(url);
+  return response;
+};
+
+export const addArticlesRequest = (values) => {
+  const url = `${baseUrl}articles`;
+  const response = instance.post(url, values);
+  return response;
+};
+
+export const userArticlesRequest = (values) => {
+  const url = `${baseUrl}articles?author=${values}`;
+  const response = instance.get(url);
+  return response;
+};
+
+export const favoriteArticleRequest = (slug) => {
+  const url = `${baseUrl}articles/${slug}/favorite`;
+  const response = instance.post(url);
+  return response;
+};
+
+export const unfavoriteArticleRequest = (slug) => {
+  const url = `${baseUrl}articles/${slug}/favorite`;
+  const response = instance.delete(url);
   return response;
 };

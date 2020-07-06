@@ -1,0 +1,28 @@
+.container__view {
+  width: 100%;
+  display: flex;
+  padding: 16px;
+  align-items: center;
+  flex-direction: column;
+}
+
+.view__wrapper__btn {
+  margin: 10px;
+}
+
+.view__btn {
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: #ffffff;
+}
+
+.view__data {
+  list-style-type: none;
+  margin: 5px;
+}
+
+.data__description {
+  color: #1890ff;
+}

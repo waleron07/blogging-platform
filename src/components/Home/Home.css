@@ -15,7 +15,16 @@
   color: #ffffff;
 }
 
-.houme__btn {
+.houme__block__btn {
+  display: flex;
+  flex-direction: column;
+}
+
+.houme__btn__articles {
+  margin-top: 10px;
+}
+
+.houme__btn__exit {
   margin-left: 10px;
   border-radius: 5px;
   background-color: #1890ff;
@@ -24,7 +33,7 @@
   margin: 20px;
 }
 
-.houme__btn:hover {
+.houme__btn__exit:hover {
   background-color: #67a4dd;
   border-color: #67a4dd;
   color: #ffffff;

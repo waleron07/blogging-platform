@@ -7,7 +7,7 @@ import { Route, NavLink, Switch } from 'react-router-dom';
 import { getIsAuth } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
 import { clearLocalstoge } from '../../utils/localStorage';
-import { getHome, getLogin, getSignup } from '../../utils/route';
+import { getBlogging, getLogin, getSignup } from '../../utils/route';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -38,9 +38,14 @@ const Header = ({ setLoginExit }) => {
   );
 
   const Exit = () => (
-    <Button className="header__btn" onClick={handleClickExit}>
-      <NavLink to={getSignup()}>Выход</NavLink>
-    </Button>
+    <>
+      <Button className="header__btn" onClick={handleClickExit}>
+        <NavLink to={getSignup()}>Выход</NavLink>
+      </Button>
+      <Button className="header__btn">
+        <NavLink to={getBlogging()}>Личный кабинет</NavLink>
+      </Button>
+    </>
   );
 
   return (
@@ -48,7 +53,7 @@ const Header = ({ setLoginExit }) => {
       <Switch>
         <Route path={getSignup()} component={Login} />
         <Route path={getLogin()} component={Signup} />
-        <Route path={getHome()} component={Exit} />
+        <Route path={getBlogging()} component={Exit} />
       </Switch>
     </div>
   );
