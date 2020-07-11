@@ -7,6 +7,10 @@ import {
   addArticlesRequest,
   userArticlesRequest,
   articleRequest,
+  favoriteArticleRequest,
+  unfavoriteArticleRequest,
+  editArticleRequest,
+  deleteArticleRequest,
 } from '../api/index';
 import { setToken } from '../utils/localStorage';
 import { getBlogging, getSignup, getSlug } from '../utils/route';
@@ -23,6 +27,14 @@ export const setUserRequest = createAction('STATUS_USER_REQUEST');
 export const setUserSuccess = createAction('STATUS_USER_SUCCESS');
 export const setUserFailure = createAction('STATUS_USER_FAILURE');
 
+export const setArticlesRequest = createAction('STATUS_ARTICLES_REQUEST');
+export const setArticlesSuccess = createAction('STATUS_ARTICLES_SUCCESS');
+export const setArticlesFailure = createAction('STATUS_ARTICLES_FAILURE');
+
+export const setArticleRequest = createAction('STATUS_ARTICLE_REQUEST');
+export const setArticleSuccess = createAction('STATUS_ARTICLE_SUCCESS');
+export const setArticleFailure = createAction('STATUS_ARTICLE_FAILURE');
+
 export const setCreateArticleRequest = createAction(
   'STATUS_CREATE_ARTICLE_REQUEST',
 );
@@ -33,18 +45,53 @@ export const setCreateArticleFailure = createAction(
   'STATUS_CREATE_ARTICLE_FAILURE',
 );
 
-export const loginData = createAction('LOGIN_DATA');
+export const setUserArticleRequest = createAction(
+  'STATUS_USER_ARTICLE_REQUEST',
+);
+export const setUserArticleSuccess = createAction(
+  'STATUS_USER_ARTICLE_SUCCESS',
+);
+export const setUserArticleFailure = createAction(
+  'STATUS_USER_ARTICLE_FAILURE',
+);
+
+export const setDeleteArticleRequest = createAction(
+  'STATUS_DELETE_ARTICLE_REQUEST',
+);
+export const setDeleteArticleSuccess = createAction(
+  'STATUS_DELETE_ARTICLE_SUCCESS',
+);
+export const setDeleteArticleFailure = createAction(
+  'STATUS_DELETE_ARTICLE_FAILURE',
+);
+
+export const setEditArticleRequest = createAction(
+  'STATUS_EDIT_ARTICLE_REQUEST',
+);
+export const setEditArticleSuccess = createAction(
+  'STATUS_EDIT_ARTICLE_SUCCESS',
+);
+export const setEditArticleFailure = createAction(
+  'STATUS_EDIT_ARTICLE_FAILURE',
+);
+
+export const setFavoriteArticleRequest = createAction(
+  'STATUS_FAVORITE_ARTICLE_REQUEST',
+);
+export const setFavoriteArticleSuccess = createAction(
+  'STATUS_FAVORITE_ARTICLE_SUCCESS',
+);
+export const setFavoriteArticleFailure = createAction(
+  'STATUS_FAVORITE_ARTICLE_FAILURE',
+);
+
 export const setLoginExit = createAction('LOGIN_EXIT');
-export const getRequest = createAction('REQUEST_DATA');
-export const articlesData = createAction('ARTICLES_DATA');
-export const articleData = createAction('ARTICLE_DATA');
 
 export const getUser = (history) => async (dispatch) => {
   dispatch(setUserRequest());
   try {
     const response = await userRequest();
-    dispatch(setUserSuccess());
-    dispatch(loginData(response.data));
+    dispatch(setUserSuccess(response.data));
     history.push(getBlogging());
   } catch (error) {
     dispatch(setUserFailure());
@@ -80,23 +127,27 @@ export const registration = (values) => async (dispatch) => {
   }
 };
 
-export const getArticles = () => async (dispatch) => {
+export const getArticles = (count = 0) => async (dispatch) => {
+  dispatch(setArticlesRequest);
   try {
-    const response = await articlesRequest();
-    dispatch(articlesData(response.data));
+    const response = await articlesRequest(count);
+    dispatch(setArticlesSuccess(response.data));
   } catch (error) {
-    dispatch(setLoginFailure());
+    dispatch(setArticlesFailure(error.isAxiosError));
     throw error;
   }
 };
 
-export const getArticle = (history, slug) => async (dispatch) => {
+export const getArticle = (slug, history = null) => async (dispatch) => {
+  dispatch(setArticleRequest);
   try {
     const response = await articleRequest(slug);
-    dispatch(articleData(response.data));
-    history.push(getSlug(slug));
+    dispatch(setArticleSuccess(response.data));
+    if (history !== null) {
+      history.push(getSlug(slug));
+    }
   } catch (error) {
-    dispatch(setLoginFailure());
+    dispatch(setArticleFailure());
     throw error;
   }
 };
@@ -107,17 +158,60 @@ export const createArticles = (values) => async (dispatch) => {
     await addArticlesRequest(values);
     dispatch(setCreateArticleSuccess());
   } catch (error) {
-    dispatch(setCreateArticleFailure());
+    dispatch(setCreateArticleFailure(error.isAxiosError));
     throw error;
   }
 };
 
-export const userArticles = (values) => async (dispatch) => {
+export const userArticles = (values, count = 0) => async (dispatch) => {
+  dispatch(setUserArticleRequest());
   try {
-    const response = await userArticlesRequest(values);
-    dispatch(articlesData(response.data));
+    const response = await userArticlesRequest(values, count);
+    dispatch(setUserArticleSuccess(response.data));
   } catch (error) {
-    dispatch(setLoginFailure());
+    dispatch(setUserArticleFailure(error.isAxiosError));
     throw error;
+  }
+};
+
+export const deleteArticle = (slug) => async (dispatch) => {
+  dispatch(setDeleteArticleRequest());
+  try {
+    await deleteArticleRequest(slug);
+    dispatch(setDeleteArticleSuccess());
+  } catch (error) {
+    dispatch(setDeleteArticleFailure(error.isAxiosError));
+    throw error;
+  }
+};
+
+export const editArticle = (values, slug) => async (dispatch) => {
+  dispatch(setEditArticleRequest());
+  try {
+    await editArticleRequest(values, slug);
+    dispatch(setEditArticleSuccess());
+  } catch (error) {
+    dispatch(setEditArticleFailure());
+    throw error;
+  }
+};
+
+export const favoriteArticle = (slug) => async (dispatch) => {
+  dispatch(setFavoriteArticleRequest());
+  try {
+    const response = await favoriteArticleRequest(slug);
+    dispatch(setFavoriteArticleSuccess(response.data));
+  } catch (error) {
+    dispatch(setFavoriteArticleFailure(error.isAxiosError));
+  }
+};
+
+export const unfavoriteArticle = (slug) => async (dispatch) => {
+  dispatch(setFavoriteArticleRequest());
+  try {
+    const response = await unfavoriteArticleRequest(slug);
+    dispatch(setFavoriteArticleSuccess(response.data));
+  } catch (error) {
+    dispatch(setFavoriteArticleFailure(error.isAxiosError));
   }
 };

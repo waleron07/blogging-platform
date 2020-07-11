@@ -24,7 +24,6 @@
 
 .info__container {
   display: flex;
-  justify-content: space-between;
 }
 
 .article__generated {

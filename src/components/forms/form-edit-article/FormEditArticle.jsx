@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -6,30 +5,58 @@ import {
   Formik, Form, Field, FieldArray,
 } from 'formik';
 import { Button, Input } from 'antd';
-import { TextField, TextareaAutosize } from '@material-ui/core';
 import { uniqueId } from 'lodash';
+import { TextField, TextareaAutosize } from '@material-ui/core';
 import validationSchema from './validation';
 import useStyles from '../styled';
-import { getBlockingForm, getArticlesList } from '../../../redux/selectors';
+import { getBlockingForm, getArticleOne } from '../../../redux/selectors';
 import * as actions from '../../../redux/actions';
 
-const FormEditArticle = ({ isBlockingForm, articlesList }) => {
+const FormEditArticle = ({ isBlockingForm, articleOne, editArticle }) => {
   const [statusEditArticle, setStatusEditArticle] = useState(null);
-
+  const { article } = articleOne;
   const classes = useStyles();
-  const initialValues = {
-    title: '',
-    description: '',
-    body: '',
-    ret: '',
-    tagList: [],
+
+  const normalizeData = ({ tagList }) => {
+    const newTagList = tagList.filter(({ tags }) => tags !== '');
+    const arrTag = newTagList.reduce((acc, { tags }) => [...acc, tags], []);
+    return Array.from(new Set(arrTag));
   };
-  console.log(articlesList);
+  const formaTagList = () => {
+    const res = article.tagList.reduce((acc, item) => {
+      const id = uniqueId();
+      const tags = item;
+      acc.push({
+        id,
+        tags,
+      });
+
+      return acc;
+    }, []);
+    return res;
+  };
+
+  const initialValues = {
+    title: article.title,
+    description: article.description,
+    body: article.body,
+    tagList: formaTagList(),
+  };
 
   const handleSubmitForm = async (values, { setFieldError }) => {
-    console.log(values);
+    const { title, description, body } = values;
+    const arrTagList = normalizeData(values);
+    const articles = {
+      article: {
+        title,
+        description,
+        body,
+        tagList: arrTagList,
+      },
+    };
 
     try {
+      await editArticle(articles, article.slug);
       setStatusEditArticle(true);
     } catch (error) {
       if (error.response === undefined && error.isAxiosError) {
@@ -40,7 +67,7 @@ const FormEditArticle = ({ isBlockingForm, articlesList }) => {
 
   const returnForm = () => (
     <div className={classes.form__container__addArticle}>
-      <h1 className={classes.form__title}>Новая статья</h1>
+      <h1 className={classes.form__title}>Редактировать статью</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -102,33 +129,18 @@ const FormEditArticle = ({ isBlockingForm, articlesList }) => {
               rows="10"
               variant="outlined"
               onChange={handleChange('body')}
-              error={touched.body && Boolean(errors.body)}
-              helperText={touched.body && errors.body}
               onBlur={handleBlur('body')}
               required
               value={values.body}
               disabled={isBlockingForm}
             />
+            <span className={classes.error__internet}>
+              {touched.body ? errors.body : ''}
+            </span>
             <FieldArray
               name="tagList"
               render={(arrayHelpers) => (
                 <div>
-                  <Field
-                    size="small"
-                    name="ret"
-                    as="input"
-                    component={TextField}
-                    className={classes.form__user__data}
-                    label="Подробнее"
-                    variant="outlined"
-                    onChange={handleChange('ret')}
-                    error={touched.ret && Boolean(errors.ret)}
-                    helperText={touched.ret && errors.ret}
-                    onBlur={handleBlur('ret')}
-                    required
-                    value={values.ret}
-                    disabled={isBlockingForm}
-                  />
                   {values.tagList.map((tags, index) => (
                     <div key={tags.id}>
                       <div className={classes.form__block__tags}>
@@ -137,6 +149,7 @@ const FormEditArticle = ({ isBlockingForm, articlesList }) => {
                           name={`tagList.[${index}].tags`}
                           onChange={handleChange}
                           disabled={isBlockingForm}
+                          value={tags.tags}
                         />
                         <Button
                           className={classes.form__user__btn__tags}
@@ -191,15 +204,16 @@ const FormEditArticle = ({ isBlockingForm, articlesList }) => {
 const mapStateToProps = (state) => {
   const props = {
     isBlockingForm: getBlockingForm(state),
-    articlesList: getArticlesList(state),
+    articleOne: getArticleOne(state),
   };
   return props;
 };
 
 FormEditArticle.propTypes = {
   createArticles: PropTypes.func.isRequired,
+  editArticle: PropTypes.func.isRequired,
   isBlockingForm: PropTypes.bool.isRequired,
-  articlesList: PropTypes.oneOfType([
+  articleOne: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.number,
     PropTypes.object,
@@ -209,6 +223,7 @@ FormEditArticle.propTypes = {
 const actionCreators = {
   createArticles: actions.createArticles,
   getArticles: actions.getArticles,
+  editArticle: actions.editArticle,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormEditArticle);

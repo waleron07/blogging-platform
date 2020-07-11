@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
@@ -10,20 +10,43 @@ import {
   getArticleOne,
   getUsername,
   getIsAuth,
+  getIsErrorInternet,
 } from '../../../redux/selectors';
 import * as actions from '../../../redux/actions';
 import formatDate from '../../../utils/formatDate';
+import { getEdit } from '../../../utils/route';
 import './ViewArticle.css';
 
-const ViewArticle = ({ articleOne, username, isAuth }) => {
+const ViewArticle = ({
+  articleOne,
+  username,
+  isAuth,
+  favoriteArticle,
+  unfavoriteArticle,
+  deleteArticle,
+  isErrorInternet,
+}) => {
+  const history = useHistory();
+  const [statusDeleteArticle, setStatusDeleteArticle] = useState(null);
   const { article } = articleOne;
+  const handleClickBtnLike = () => {
+    const { favorited, slug } = article;
+    return favorited ? unfavoriteArticle(slug) : favoriteArticle(slug);
+  };
+
+  const handleClickBtnDelete = async () => {
+    await deleteArticle(article.slug);
+    setStatusDeleteArticle(true);
+  };
+
+  const handleClickBtnEdit = () => {
+    history.push(getEdit(article.slug));
+  };
+
   const returnLike = () => (
     <li className="view__data">
       <Tooltip title="убрать лайк">
-        <Favorite
-          color="secondary"
-          onClick={() => console.log('клик прошел')}
-        />
+        <Favorite color="secondary" onClick={handleClickBtnLike} />
       </Tooltip>
       <span>{article.favoritesCount}</span>
     </li>
@@ -32,22 +55,25 @@ const ViewArticle = ({ articleOne, username, isAuth }) => {
   const returnNotLike = () => (
     <li className="view__data">
       <Tooltip title="поставить лайк">
-        <FavoriteBorder
-          color="secondary"
-          onClick={() => console.log('клик прошел')}
-        />
+        <FavoriteBorder color="secondary" onClick={handleClickBtnLike} />
       </Tooltip>
       <span>{article.favoritesCount}</span>
     </li>
   );
 
-  console.log(article);
-  return (
+  const returnArticle = () => (
     <div className="container__view">
+      {isErrorInternet && (
+        <span className="error__internet">Нет подключения к интернету</span>
+      )}
       {isAuth && username === article.author.username ? (
         <div className="view__wrapper__btn">
-          <Button className="view__btn">редактировать</Button>
-          <Button className="view__btn">удалить</Button>
+          <Button className="view__btn" onClick={handleClickBtnEdit}>
+            редактировать
+          </Button>
+          <Button className="view__btn" onClick={handleClickBtnDelete}>
+            удалить
+          </Button>
         </div>
       ) : (
         ''
@@ -92,6 +118,14 @@ const ViewArticle = ({ articleOne, username, isAuth }) => {
       </div>
     </div>
   );
+
+  const returnStatusDelete = () => (
+    <div>
+      <span>Ваша статья успешно удалена</span>
+    </div>
+  );
+
+  return statusDeleteArticle ? returnStatusDelete() : returnArticle();
 };
 
 const mapStateToProps = (state) => {
@@ -99,12 +133,15 @@ const mapStateToProps = (state) => {
     articleOne: getArticleOne(state),
     username: getUsername(state),
     isAuth: getIsAuth(state),
+    isErrorInternet: getIsErrorInternet(state),
   };
   return props;
 };
 
 const actionCreators = {
-  getArticle: actions.getArticle,
+  favoriteArticle: actions.favoriteArticle,
+  unfavoriteArticle: actions.unfavoriteArticle,
+  deleteArticle: actions.deleteArticle,
 };
 
 ViewArticle.propTypes = {
@@ -115,6 +152,10 @@ ViewArticle.propTypes = {
   ]).isRequired,
   username: PropTypes.string.isRequired,
   isAuth: PropTypes.bool.isRequired,
+  isErrorInternet: PropTypes.bool.isRequired,
+  unfavoriteArticle: PropTypes.func.isRequired,
+  favoriteArticle: PropTypes.func.isRequired,
+  deleteArticle: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(ViewArticle);

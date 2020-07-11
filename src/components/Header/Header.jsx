@@ -4,23 +4,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Route, NavLink, Switch } from 'react-router-dom';
-import { getIsAuth } from '../../redux/selectors';
+import { getIsAuth, getIsErrorInternet } from '../../redux/selectors';
 import * as actions from '../../redux/actions';
 import { clearLocalstoge } from '../../utils/localStorage';
 import { getBlogging, getLogin, getSignup } from '../../utils/route';
 
-const mapStateToProps = (state) => {
-  const props = {
-    isAuth: getIsAuth(state),
-  };
-  return props;
-};
-
-const actionCreators = {
-  setLoginExit: actions.setLoginExit,
-};
-
-const Header = ({ setLoginExit }) => {
+const Header = ({ setLoginExit, isErrorInternet }) => {
   const handleClickExit = () => {
     setLoginExit();
     clearLocalstoge();
@@ -42,14 +31,14 @@ const Header = ({ setLoginExit }) => {
       <Button className="header__btn" onClick={handleClickExit}>
         <NavLink to={getSignup()}>Выход</NavLink>
       </Button>
-      <Button className="header__btn">
-        <NavLink to={getBlogging()}>Личный кабинет</NavLink>
-      </Button>
     </>
   );
 
   return (
     <div className="header">
+      {isErrorInternet && (
+        <span className="error__internet">Нет подключения к интернету</span>
+      )}
       <Switch>
         <Route path={getSignup()} component={Login} />
         <Route path={getLogin()} component={Signup} />
@@ -59,8 +48,21 @@ const Header = ({ setLoginExit }) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  const props = {
+    isAuth: getIsAuth(state),
+    isErrorInternet: getIsErrorInternet(state),
+  };
+  return props;
+};
+
+const actionCreators = {
+  setLoginExit: actions.setLoginExit,
+};
+
 Header.propTypes = {
   setLoginExit: PropTypes.func.isRequired,
+  isErrorInternet: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps, actionCreators)(Header);

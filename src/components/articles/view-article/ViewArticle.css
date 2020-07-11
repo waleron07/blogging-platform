@@ -26,3 +26,7 @@
 .data__description {
   color: #1890ff;
 }
+
+.error__internet {
+  color: red;
+}

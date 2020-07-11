@@ -9,6 +9,7 @@ import { getIsAuth } from '../../redux/selectors';
 import FormRegistration from '../forms/form-registration';
 import FormAutorization from '../forms/form-autorisation';
 import FormAddArticle from '../forms/form-add-article';
+import FormEditArticle from '../forms/form-edit-article';
 import ArticlesList from '../articles/articles-list';
 import ViewArticle from '../articles/view-article';
 import Home from '../Home';
@@ -19,6 +20,7 @@ import {
   getSignup,
   getAdd,
   getSlug,
+  getEdit,
 } from '../../utils/route';
 import * as actions from '../../redux/actions';
 
@@ -59,6 +61,7 @@ const App = ({
           <Route exact path={getBlogging()} component={ArticlesList} />
         </Switch>
         <Route exact path={getAdd()} component={FormAddArticle} />
+        <Route exact path={getEdit()} component={FormEditArticle} />
       </div>
     </div>
   );

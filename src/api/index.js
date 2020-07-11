@@ -49,8 +49,8 @@ export const signupRequest = (values) => {
   return response;
 };
 
-export const articlesRequest = () => {
-  const url = `${baseUrl}articles?limit=5`;
+export const articlesRequest = (count) => {
+  const url = `${baseUrl}articles?limit=10&offset=${count}`;
   const response = instance.get(url);
   return response;
 };
@@ -67,8 +67,8 @@ export const addArticlesRequest = (values) => {
   return response;
 };
 
-export const userArticlesRequest = (values) => {
-  const url = `${baseUrl}articles?author=${values}`;
+export const userArticlesRequest = (values, count) => {
+  const url = `${baseUrl}articles?author=${values}&offset=${count}`;
   const response = instance.get(url);
   return response;
 };
@@ -81,6 +81,18 @@ export const favoriteArticleRequest = (slug) => {
 
 export const unfavoriteArticleRequest = (slug) => {
   const url = `${baseUrl}articles/${slug}/favorite`;
+  const response = instance.delete(url);
+  return response;
+};
+
+export const editArticleRequest = (values, slug) => {
+  const url = `${baseUrl}articles/${slug}`;
+  const response = instance.put(url, values);
+  return response;
+};
+
+export const deleteArticleRequest = (slug) => {
+  const url = `${baseUrl}articles/${slug}`;
   const response = instance.delete(url);
   return response;
 };

@@ -14,7 +14,7 @@ import { getBlockingForm } from '../../../redux/selectors';
 import * as actions from '../../../redux/actions';
 
 const FormAddArticle = ({ createArticles, isBlockingForm }) => {
-  const [statusCreateAticle, setStatusCreateAticle] = useState(null);
+  const [statusCreateArticle, setStatusCreateArticle] = useState(null);
 
   const classes = useStyles();
   const initialValues = {
@@ -32,7 +32,6 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
   };
 
   const handleSubmitForm = async (values, { setFieldError }) => {
-    console.log(values);
     const { title, description, body } = values;
     const arrTagList = normalizeData(values);
     const articles = {
@@ -46,9 +45,9 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
 
     try {
       await createArticles(articles);
-      setStatusCreateAticle(true);
+      setStatusCreateArticle(true);
     } catch (error) {
-      if (error.response === undefined && error.isAxiosError) {
+      if (error.isAxiosError) {
         setFieldError('errorName', 'Нет подключения к интернету');
       }
     }
@@ -186,7 +185,7 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
     </div>
   );
 
-  return statusCreateAticle ? returnStatusCreate() : returnForm();
+  return statusCreateArticle ? returnStatusCreate() : returnForm();
 };
 
 const mapStateToProps = (state) => {
