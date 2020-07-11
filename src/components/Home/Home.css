@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 250px;
   align-items: center;
 }
 
@@ -15,9 +14,23 @@
   color: #ffffff;
 }
 
+@media (max-width: 900px) {
+  .btn__text {
+    font-size: 12px;
+  }
+}
+
 .houme__block__btn {
   display: flex;
   flex-direction: column;
+  width: 90%;
+  padding: 5px;
+}
+
+@media (max-width: 700px) and (min-width: 450px) {
+  .houme__block__btn {
+    width: 30%;
+  }
 }
 
 .houme__btn__articles {

@@ -9,7 +9,20 @@
   min-height: 100vh;
 }
 
+@media (max-width: 700px) {
+  .wrapper_container {
+    display: block;
+  }
+}
+
 .sitebar {
-  margin-right: 20px;
+  width: 30%;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+@media (max-width: 700px) {
+  .sitebar {
+    margin: 0;
+    width: 100%;
+  }
 }

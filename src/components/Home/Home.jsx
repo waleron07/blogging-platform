@@ -47,16 +47,22 @@ const Houme = ({
           className="houme__btn__articles"
           onClick={handleClickAllArticles}
         >
-          <NavLink to={getBlogging()}>Показать все статьи</NavLink>
+          <NavLink className="btn__text" to={getBlogging()}>
+            Показать все статьи
+          </NavLink>
         </Button>
         <Button
           className="houme__btn__articles"
           onClick={handleClickUserArticles}
         >
-          <NavLink to={getBlogging()}>Показать мои статьи</NavLink>
+          <NavLink className="btn__text" to={getBlogging()}>
+            Показать мои статьи
+          </NavLink>
         </Button>
         <Button className="houme__btn__articles">
-          <NavLink to={getAdd()}>Добавить статью</NavLink>
+          <NavLink className="btn__text" to={getAdd()}>
+            Добавить статью
+          </NavLink>
         </Button>
       </div>
       <Button className="houme__btn__exit" onClick={handleClickExit}>
