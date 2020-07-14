@@ -7,13 +7,9 @@ import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { getBlockingForm } from '../../../redux/selectors';
 import validationSchema from './vadalition';
-import * as actions from '../../../redux/actions';
+import * as actionsAuthentication from '../../../redux/actions/actionsAuthentication';
 import useStyles from '../styled';
 import { getLogin } from '../../../utils/route';
-
-const actionCreators = {
-  registration: actions.registration,
-};
 
 const FormRegistration = ({ registration, isBlockingForm }) => {
   const classes = useStyles();
@@ -139,6 +135,10 @@ const mapStateToProps = (state) => {
     isBlockingForm: getBlockingForm(state),
   };
   return props;
+};
+
+const actionCreators = {
+  registration: actionsAuthentication.registration,
 };
 
 FormRegistration.propTypes = {

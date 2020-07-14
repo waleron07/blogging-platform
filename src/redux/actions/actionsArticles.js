@@ -1,8 +1,6 @@
 import { createAction } from 'redux-actions';
+
 import {
-  loginRequest,
-  signupRequest,
-  userRequest,
   articlesRequest,
   addArticlesRequest,
   userArticlesRequest,
@@ -11,21 +9,9 @@ import {
   unfavoriteArticleRequest,
   editArticleRequest,
   deleteArticleRequest,
-} from '../api/index';
-import { setToken } from '../utils/localStorage';
-import { getBlogging, getSignup, getSlug } from '../utils/route';
+} from '../../api/index';
 
-export const setSignUpRequest = createAction('STATUS_SIGNUP_REQUEST');
-export const setSignUpSuccess = createAction('STATUS_SIGNUP_SUCCESS');
-export const setSignUpFailure = createAction('STATUS_SIGNUP_FAILURE');
-
-export const setLoginRequest = createAction('STATUS_LOGIN_REQUEST');
-export const setLoginSuccess = createAction('STATUS_LOGIN_SUCCESS');
-export const setLoginFailure = createAction('STATUS_LOGIN_FAILURE');
-
-export const setUserRequest = createAction('STATUS_USER_REQUEST');
-export const setUserSuccess = createAction('STATUS_USER_SUCCESS');
-export const setUserFailure = createAction('STATUS_USER_FAILURE');
+import { getSlug } from '../../utils/route';
 
 export const setArticlesRequest = createAction('STATUS_ARTICLES_REQUEST');
 export const setArticlesSuccess = createAction('STATUS_ARTICLES_SUCCESS');
@@ -84,49 +70,6 @@ export const setFavoriteArticleSuccess = createAction(
 export const setFavoriteArticleFailure = createAction(
   'STATUS_FAVORITE_ARTICLE_FAILURE',
 );
-
-export const setLoginExit = createAction('LOGIN_EXIT');
-
-export const getUser = (history) => async (dispatch) => {
-  dispatch(setUserRequest());
-  try {
-    const response = await userRequest();
-    dispatch(setUserSuccess(response.data));
-    history.push(getBlogging());
-  } catch (error) {
-    dispatch(setUserFailure());
-    history.push(getSignup());
-  }
-};
-
-export const authorization = (values) => async (dispatch) => {
-  dispatch(setSignUpRequest());
-  try {
-    const response = await signupRequest(values);
-    const { token } = response.data.user;
-    setToken(token);
-    dispatch(setSignUpSuccess());
-  } catch (error) {
-    dispatch(setSignUpFailure());
-    throw error;
-  }
-};
-
-export const registration = (values) => async (dispatch) => {
-  dispatch(setLoginRequest());
-  try {
-    const response = await loginRequest(values);
-    if (response.status === 200) {
-      const { token } = response.data.user;
-      localStorage.setItem('token', `${token}`);
-      dispatch(setLoginSuccess());
-    }
-  } catch (error) {
-    dispatch(setLoginFailure());
-    throw error;
-  }
-};
-
 export const getArticles = (count = 0) => async (dispatch) => {
   dispatch(setArticlesRequest);
   try {
@@ -147,7 +90,7 @@ export const getArticle = (slug, history = null) => async (dispatch) => {
       history.push(getSlug(slug));
     }
   } catch (error) {
-    dispatch(setArticleFailure());
+    dispatch(setArticleFailure(error.isAxiosError));
     throw error;
   }
 };

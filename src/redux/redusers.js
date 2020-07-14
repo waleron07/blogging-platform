@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import * as actions from './actions';
+import * as actionsAuthentication from './actions/actionsAuthentication';
+import * as actionsArticles from './actions/actionsArticles';
 
 const username = handleActions(
   {
-    [actions.setUserSuccess](state, { payload: login }) {
+    [actionsAuthentication.setUserSuccess](state, { payload: login }) {
       return login.user.username;
     },
   },
@@ -14,25 +15,25 @@ const username = handleActions(
 
 const isAuth = handleActions(
   {
-    [actions.setLoginSuccess]() {
+    [actionsAuthentication.setLoginSuccess]() {
       return true;
     },
-    [actions.setSignUpSuccess]() {
+    [actionsAuthentication.setSignUpSuccess]() {
       return true;
     },
-    [actions.setUserSuccess]() {
+    [actionsAuthentication.setUserSuccess]() {
       return true;
     },
-    [actions.setLoginFailure]() {
+    [actionsAuthentication.setLoginFailure]() {
       return false;
     },
-    [actions.setSignUpFailure]() {
+    [actionsAuthentication.setSignUpFailure]() {
       return false;
     },
-    [actions.setUserFailure]() {
+    [actionsAuthentication.setUserFailure]() {
       return false;
     },
-    [actions.setLoginExit]() {
+    [actionsAuthentication.setLoginExit]() {
       return false;
     },
   },
@@ -41,34 +42,46 @@ const isAuth = handleActions(
 
 const isErrorInternet = handleActions(
   {
-    [actions.setFavoriteArticleFailure](state, { payload: isAxiosError }) {
+    [actionsArticles.setFavoriteArticleFailure](
+      state,
+      { payload: isAxiosError },
+    ) {
       return isAxiosError;
     },
-    [actions.setFavoriteArticleSuccess]() {
+    [actionsArticles.setFavoriteArticleSuccess]() {
       return false;
     },
-    [actions.setCreateArticleFailure]() {
+    [actionsArticles.setCreateArticleFailure]() {
       return false;
     },
-    [actions.setDeleteArticleFailure](state, { payload: isAxiosError }) {
+    [actionsArticles.setDeleteArticleFailure](
+      state,
+      { payload: isAxiosError },
+    ) {
       return isAxiosError;
     },
-    [actions.setDeleteArticleSuccess]() {
+    [actionsArticles.setDeleteArticleSuccess]() {
       return false;
     },
-    [actions.setUserArticleFailure](state, { payload: isAxiosError }) {
+    [actionsArticles.setUserArticleFailure](state, { payload: isAxiosError }) {
       return isAxiosError;
     },
-    [actions.setUserArticleSuccess]() {
+    [actionsArticles.setUserArticleSuccess]() {
       return false;
     },
-    [actions.setCreateArticleSuccess]() {
+    [actionsArticles.setCreateArticleSuccess]() {
       return false;
     },
-    [actions.setArticlesFailure](state, { payload: isAxiosError }) {
+    [actionsArticles.setArticlesFailure](state, { payload: isAxiosError }) {
       return isAxiosError;
     },
-    [actions.setArticlesSuccess]() {
+    [actionsArticles.setArticleFailure](state, { payload: isAxiosError }) {
+      return isAxiosError;
+    },
+    [actionsArticles.setArticlesSuccess]() {
+      return false;
+    },
+    [actionsArticles.setArticleSuccess]() {
       return false;
     },
   },
@@ -77,58 +90,61 @@ const isErrorInternet = handleActions(
 
 const isBlockingForm = handleActions(
   {
-    [actions.setLoginRequest]() {
+    [actionsAuthentication.setLoginRequest]() {
       return true;
     },
-    [actions.setCreateArticleRequest]() {
+    [actionsArticles.setCreateArticleRequest]() {
       return true;
     },
-    [actions.setDeleteArticleRequest]() {
+    [actionsArticles.setDeleteArticleRequest]() {
       return true;
     },
-    [actions.setEditArticleRequest]() {
+    [actionsArticles.setEditArticleRequest]() {
       return true;
     },
-    [actions.setFavoriteArticleRequest]() {
+    [actionsArticles.setFavoriteArticleRequest]() {
       return true;
     },
-    [actions.setSignUpRequest]() {
+    [actionsAuthentication.setSignUpRequest]() {
       return true;
     },
-    [actions.setUserSuccess]() {
+    [actionsAuthentication.setUserSuccess]() {
       return false;
     },
-    [actions.setCreateArticleSuccess]() {
+    [actionsArticles.setCreateArticleSuccess]() {
       return false;
     },
-    [actions.setDeleteArticleSuccess]() {
+    [actionsArticles.setDeleteArticleSuccess]() {
       return false;
     },
-    [actions.setEditArticleSuccess]() {
+    [actionsAuthentication.setLoginExit]() {
       return false;
     },
-    [actions.setFavoriteArticleSuccess]() {
+    [actionsArticles.setEditArticleSuccess]() {
       return false;
     },
-    [actions.setLoginFailure]() {
+    [actionsArticles.setFavoriteArticleSuccess]() {
       return false;
     },
-    [actions.setCreateArticleFailure]() {
+    [actionsAuthentication.setLoginFailure]() {
       return false;
     },
-    [actions.setDeleteArticleFailure]() {
+    [actionsArticles.setCreateArticleFailure]() {
       return false;
     },
-    [actions.setEditArticleFailure]() {
+    [actionsArticles.setDeleteArticleFailure]() {
       return false;
     },
-    [actions.setFavoriteArticleFailure]() {
+    [actionsArticles.setEditArticleFailure]() {
       return false;
     },
-    [actions.setSignUpFailure]() {
+    [actionsArticles.setFavoriteArticleFailure]() {
       return false;
     },
-    [actions.setUserFailure]() {
+    [actionsAuthentication.setSignUpFailure]() {
+      return false;
+    },
+    [actionsAuthentication.setUserFailure]() {
       return false;
     },
   },
@@ -137,14 +153,17 @@ const isBlockingForm = handleActions(
 
 const articlesList = handleActions(
   {
-    [actions.setArticlesSuccess](state, { payload: articles }) {
+    [actionsArticles.setArticlesSuccess](state, { payload: articles }) {
       return articles;
     },
-    [actions.setUserArticleSuccess](state, { payload: articles }) {
+    [actionsArticles.setUserArticleSuccess](state, { payload: articles }) {
       const userArticle = true;
       return { ...articles, userArticle };
     },
-    [actions.setFavoriteArticleSuccess](state, { payload: { article } }) {
+    [actionsArticles.setFavoriteArticleSuccess](
+      state,
+      { payload: { article } },
+    ) {
       const { slug, favorited, favoritesCount } = article;
       const { articles, articlesCount } = state;
       articles.forEach((item) => {
@@ -161,10 +180,10 @@ const articlesList = handleActions(
 
 const articleOne = handleActions(
   {
-    [actions.setArticleSuccess](state, { payload: article }) {
+    [actionsArticles.setArticleSuccess](state, { payload: article }) {
       return article;
     },
-    [actions.setFavoriteArticleSuccess](state, { payload: article }) {
+    [actionsArticles.setFavoriteArticleSuccess](state, { payload: article }) {
       return article;
     },
   },

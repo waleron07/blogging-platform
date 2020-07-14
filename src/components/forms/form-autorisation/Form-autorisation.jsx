@@ -8,12 +8,8 @@ import { NavLink } from 'react-router-dom';
 import useStyles from '../styled';
 import { getBlockingForm } from '../../../redux/selectors';
 import validationSchema from './vadalition';
-import * as actions from '../../../redux/actions';
+import * as actionsAuthentication from '../../../redux/actions/actionsAuthentication';
 import { getSignup } from '../../../utils/route';
-
-const actionCreators = {
-  authorization: actions.authorization,
-};
 
 const FormAutorization = ({ authorization, isBlockingForm }) => {
   const classes = useStyles();
@@ -116,6 +112,10 @@ const mapStateToProps = (state) => {
     isBlockingForm: getBlockingForm(state),
   };
   return props;
+};
+
+const actionCreators = {
+  authorization: actionsAuthentication.authorization,
 };
 
 FormAutorization.propTypes = {

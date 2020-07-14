@@ -5,13 +5,13 @@ import './FormAddArticle.css';
 import {
   Formik, Form, Field, FieldArray,
 } from 'formik';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import { TextField, TextareaAutosize } from '@material-ui/core';
 import { uniqueId } from 'lodash';
 import validationSchema from './validation';
 import useStyles from '../styled';
 import { getBlockingForm } from '../../../redux/selectors';
-import * as actions from '../../../redux/actions';
+import * as actionsArticles from '../../../redux/actions/actionsArticles';
 
 const FormAddArticle = ({ createArticles, isBlockingForm }) => {
   const [statusCreateArticle, setStatusCreateArticle] = useState(null);
@@ -21,7 +21,7 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
     title: '',
     description: '',
     body: '',
-    ret: '',
+    tags: '',
     tagList: [],
   };
 
@@ -65,6 +65,8 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
           handleSubmit,
           handleBlur,
           handleChange,
+          setFieldValue,
+          setFieldError,
           values,
           touched,
           errors,
@@ -127,20 +129,30 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
             </span>
             <FieldArray
               name="tagList"
-              render={(arrayHelpers) => (
-                <div>
-                  {values.tagList.map((tags, index) => (
-                    <div key={tags.id}>
+              // eslint-disable-next-line no-unused-vars
+              render={({ push, remove }) => (
+                <div className={classes.form__user__tagList}>
+                  <Field
+                    size="small"
+                    name="tags"
+                    as="input"
+                    component={TextField}
+                    className={classes.form__user__body}
+                    placeholder="напишите тег"
+                    rows="10"
+                    variant="outlined"
+                    onChange={handleChange('tags')}
+                    onBlur={handleBlur('tags')}
+                    value={values.tags}
+                    disabled={isBlockingForm}
+                  />
+                  {values.tagList.map((tag, index) => (
+                    <div key={tag.id}>
                       <div className={classes.form__block__tags}>
-                        <Input
-                          className={classes.form__user__tags}
-                          name={`tagList.[${index}].tags`}
-                          onChange={handleChange}
-                          disabled={isBlockingForm}
-                        />
+                        <span>{tag.tags}</span>
                         <Button
                           className={classes.form__user__btn__tags}
-                          onClick={() => arrayHelpers.remove(index)}
+                          onClick={() => remove(index)}
                           disabled={isBlockingForm}
                         >
                           х
@@ -152,7 +164,15 @@ const FormAddArticle = ({ createArticles, isBlockingForm }) => {
                     className={classes.form__user__btn}
                     disabled={isBlockingForm}
                     onClick={() => {
-                      arrayHelpers.push({ id: uniqueId(), tags: '' });
+                      if (values.tags.trim()) {
+                        values.tagList.push({
+                          id: uniqueId(),
+                          tags: values.tags,
+                        });
+                        setFieldValue('tags', '');
+                      } else {
+                        setFieldError('errorName', 'Тэг недолжен быть пустым');
+                      }
                     }}
                   >
                     Добавить тэг
@@ -201,7 +221,7 @@ FormAddArticle.propTypes = {
 };
 
 const actionCreators = {
-  createArticles: actions.createArticles,
+  createArticles: actionsArticles.createArticles,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormAddArticle);

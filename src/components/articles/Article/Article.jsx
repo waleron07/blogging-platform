@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FavoriteBorder, Favorite } from '@material-ui/icons';
 import Tooltip from '@material-ui/core/Tooltip';
 import { getIsAuth } from '../../../redux/selectors';
-import * as actions from '../../../redux/actions';
+import * as actionsArticles from '../../../redux/actions/actionsArticles';
 import formatDate from '../../../utils/formatDate';
 import './Article.css';
 
@@ -120,8 +120,8 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  favoriteArticle: actions.favoriteArticle,
-  unfavoriteArticle: actions.unfavoriteArticle,
+  favoriteArticle: actionsArticles.favoriteArticle,
+  unfavoriteArticle: actionsArticles.unfavoriteArticle,
 };
 
 Article.propTypes = {

@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
   form__block__tags: {
     display: 'flex',
+    alignItems: 'center',
   },
 
   form__user__tags: {
@@ -62,6 +63,11 @@ const useStyles = makeStyles((theme) => ({
   error__internet: {
     textAlign: 'center',
     color: 'red',
+  },
+
+  form__user__tagList: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   form__user__btn: {

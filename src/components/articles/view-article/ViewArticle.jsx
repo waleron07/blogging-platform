@@ -12,7 +12,7 @@ import {
   getIsAuth,
   getIsErrorInternet,
 } from '../../../redux/selectors';
-import * as actions from '../../../redux/actions';
+import * as actionsArticles from '../../../redux/actions/actionsArticles';
 import formatDate from '../../../utils/formatDate';
 import { getEdit } from '../../../utils/route';
 import './ViewArticle.css';
@@ -139,9 +139,9 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  favoriteArticle: actions.favoriteArticle,
-  unfavoriteArticle: actions.unfavoriteArticle,
-  deleteArticle: actions.deleteArticle,
+  favoriteArticle: actionsArticles.favoriteArticle,
+  unfavoriteArticle: actionsArticles.unfavoriteArticle,
+  deleteArticle: actionsArticles.deleteArticle,
 };
 
 ViewArticle.propTypes = {

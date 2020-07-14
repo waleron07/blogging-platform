@@ -9,7 +9,8 @@ import {
   getIsErrorInternet,
   getIsAuth,
 } from '../../../redux/selectors';
-import * as actions from '../../../redux/actions';
+import * as actionsArticles from '../../../redux/actions/actionsArticles';
+import * as actionsAuthentication from '../../../redux/actions/actionsAuthentication';
 import Article from '../Article';
 import './ArticlesList.css';
 
@@ -87,11 +88,11 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  getUser: actions.getUser,
-  setLoginSuccess: actions.setLoginSuccess,
-  getArticles: actions.getArticles,
-  getArticle: actions.getArticle,
-  userArticles: actions.userArticles,
+  getUser: actionsAuthentication.getUser,
+  setLoginSuccess: actionsAuthentication.setLoginSuccess,
+  getArticles: actionsArticles.getArticles,
+  getArticle: actionsArticles.getArticle,
+  userArticles: actionsArticles.userArticles,
 };
 
 ArticlesList.propTypes = {

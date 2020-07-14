@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Route, NavLink, Switch } from 'react-router-dom';
 import { getIsAuth, getIsErrorInternet } from '../../redux/selectors';
-import * as actions from '../../redux/actions';
+import * as actionsAuthentication from '../../redux/actions/actionsAuthentication';
 import { clearLocalstoge } from '../../utils/localStorage';
 import { getBlogging, getLogin, getSignup } from '../../utils/route';
 
@@ -57,7 +57,7 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  setLoginExit: actions.setLoginExit,
+  setLoginExit: actionsAuthentication.setLoginExit,
 };
 
 Header.propTypes = {

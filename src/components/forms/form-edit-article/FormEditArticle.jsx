@@ -10,7 +10,7 @@ import { TextField, TextareaAutosize } from '@material-ui/core';
 import validationSchema from './validation';
 import useStyles from '../styled';
 import { getBlockingForm, getArticleOne } from '../../../redux/selectors';
-import * as actions from '../../../redux/actions';
+import * as actionsArticles from '../../../redux/actions/actionsArticles';
 
 const FormEditArticle = ({ isBlockingForm, articleOne, editArticle }) => {
   const [statusEditArticle, setStatusEditArticle] = useState(null);
@@ -221,9 +221,9 @@ FormEditArticle.propTypes = {
 };
 
 const actionCreators = {
-  createArticles: actions.createArticles,
-  getArticles: actions.getArticles,
-  editArticle: actions.editArticle,
+  createArticles: actionsArticles.createArticles,
+  getArticles: actionsArticles.getArticles,
+  editArticle: actionsArticles.editArticle,
 };
 
 export default connect(mapStateToProps, actionCreators)(FormEditArticle);

@@ -21,19 +21,20 @@ import {
   getSlug,
   getEdit,
 } from '../../utils/route';
-import * as actions from '../../redux/actions';
+import * as actionsAuthentication from '../../redux/actions/actionsAuthentication';
+import * as actionsArticles from '../../redux/actions/actionsArticles';
 
 const App = ({
   isAuth, getUser, setLoginSuccess, getArticles,
 }) => {
   const history = useHistory();
 
-  const fetchPath = () => {
+  const fetchPath = async () => {
     const token = getToken();
     if (token) {
-      getUser(history);
-      setLoginSuccess();
-      getArticles();
+      await getUser(history);
+      await setLoginSuccess();
+      await getArticles();
     } else {
       history.push(getSignup());
       getArticles();
@@ -42,16 +43,18 @@ const App = ({
 
   useEffect(() => {
     fetchPath();
-  }, [isAuth]);
+  }, []);
 
   return (
     <div className="container">
       <Route path={getBlogging()} component={Header} />
       <div className="wrapper_container">
         <div className="sitebar">
-          {isAuth && <Route path={getBlogging()} component={Home} />}
-          <Route path={getLogin()} component={FormAutorization} />
-          <Route path={getSignup()} component={FormRegistration} />
+          <Switch>
+            {isAuth && <Route path={getBlogging()} component={Home} />}
+            <Route path={getLogin()} component={FormAutorization} />
+            <Route path={getSignup()} component={FormRegistration} />
+          </Switch>
         </div>
         <Switch>
           <Route exact path={getSlug()} component={ViewArticle} />
@@ -74,9 +77,9 @@ const mapStateToProps = (state) => {
 };
 
 const actionCreators = {
-  getUser: actions.getUser,
-  setLoginSuccess: actions.setLoginSuccess,
-  getArticles: actions.getArticles,
+  getUser: actionsAuthentication.getUser,
+  setLoginSuccess: actionsAuthentication.setLoginSuccess,
+  getArticles: actionsArticles.getArticles,
 };
 
 App.propTypes = {

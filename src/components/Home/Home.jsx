@@ -4,23 +4,11 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { getUsername } from '../../redux/selectors';
-import * as actions from '../../redux/actions';
+import * as actionsArticles from '../../redux/actions/actionsArticles';
+import * as actionsAuthentication from '../../redux/actions/actionsAuthentication';
 import './Home.css';
 import { clearLocalstoge } from '../../utils/localStorage';
 import { getAdd, getLogin, getBlogging } from '../../utils/route';
-
-const mapStateToProps = (state) => {
-  const props = {
-    username: getUsername(state),
-  };
-  return props;
-};
-
-const actionCreators = {
-  setLoginExit: actions.setLoginExit,
-  getArticles: actions.getArticles,
-  userArticles: actions.userArticles,
-};
 
 const Houme = ({
   username, setLoginExit, getArticles, userArticles,
@@ -70,6 +58,19 @@ const Houme = ({
       </Button>
     </div>
   );
+};
+
+const mapStateToProps = (state) => {
+  const props = {
+    username: getUsername(state),
+  };
+  return props;
+};
+
+const actionCreators = {
+  setLoginExit: actionsAuthentication.setLoginExit,
+  getArticles: actionsArticles.getArticles,
+  userArticles: actionsArticles.userArticles,
 };
 
 Houme.propTypes = {
