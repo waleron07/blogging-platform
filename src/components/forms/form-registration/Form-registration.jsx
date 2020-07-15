@@ -10,6 +10,7 @@ import validationSchema from './vadalition';
 import * as actionsAuthentication from '../../../redux/actions/actionsAuthentication';
 import useStyles from '../styled';
 import { getLogin } from '../../../utils/route';
+import { setToken } from '../../../utils/localStorage';
 
 const FormRegistration = ({ registration, isBlockingForm }) => {
   const classes = useStyles();
@@ -21,7 +22,11 @@ const FormRegistration = ({ registration, isBlockingForm }) => {
 
   const handleSubmitRegistration = async (values, { setFieldError }) => {
     try {
-      await registration(values, setFieldError);
+      const response = await registration(values, setFieldError);
+      if (response.status === 200) {
+        const { token } = response.data.user;
+        setToken(token);
+      }
     } catch (error) {
       if (error.response === undefined && error.isAxiosError) {
         setFieldError('errorName', 'Нет подключения к интернету');

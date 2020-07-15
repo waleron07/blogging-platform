@@ -13,9 +13,15 @@ import {
 
 import { getSlug } from '../../utils/route';
 
-export const setArticlesRequest = createAction('STATUS_ARTICLES_REQUEST');
-export const setArticlesSuccess = createAction('STATUS_ARTICLES_SUCCESS');
-export const setArticlesFailure = createAction('STATUS_ARTICLES_FAILURE');
+export const setArticlesListRequest = createAction(
+  'STATUS_ARTICLES_LIST_REQUEST',
+);
+export const setArticlesListSuccess = createAction(
+  'STATUS_ARTICLES_LIST_SUCCESS',
+);
+export const setArticlesListFailure = createAction(
+  'STATUS_ARTICLES_LIST_FAILURE',
+);
 
 export const setArticleRequest = createAction('STATUS_ARTICLE_REQUEST');
 export const setArticleSuccess = createAction('STATUS_ARTICLE_SUCCESS');
@@ -71,12 +77,12 @@ export const setFavoriteArticleFailure = createAction(
   'STATUS_FAVORITE_ARTICLE_FAILURE',
 );
 export const getArticles = (count = 0) => async (dispatch) => {
-  dispatch(setArticlesRequest);
+  dispatch(setArticlesListRequest);
   try {
     const response = await articlesRequest(count);
-    dispatch(setArticlesSuccess(response.data));
+    dispatch(setArticlesListSuccess(response.data));
   } catch (error) {
-    dispatch(setArticlesFailure(error.isAxiosError));
+    dispatch(setArticlesListFailure());
     throw error;
   }
 };
@@ -90,7 +96,7 @@ export const getArticle = (slug, history = null) => async (dispatch) => {
       history.push(getSlug(slug));
     }
   } catch (error) {
-    dispatch(setArticleFailure(error.isAxiosError));
+    dispatch(setArticleFailure());
     throw error;
   }
 };
@@ -101,7 +107,7 @@ export const createArticles = (values) => async (dispatch) => {
     await addArticlesRequest(values);
     dispatch(setCreateArticleSuccess());
   } catch (error) {
-    dispatch(setCreateArticleFailure(error.isAxiosError));
+    dispatch(setCreateArticleFailure());
     throw error;
   }
 };
@@ -112,7 +118,7 @@ export const userArticles = (values, count = 0) => async (dispatch) => {
     const response = await userArticlesRequest(values, count);
     dispatch(setUserArticleSuccess(response.data));
   } catch (error) {
-    dispatch(setUserArticleFailure(error.isAxiosError));
+    dispatch(setUserArticleFailure());
     throw error;
   }
 };
@@ -123,7 +129,7 @@ export const deleteArticle = (slug) => async (dispatch) => {
     await deleteArticleRequest(slug);
     dispatch(setDeleteArticleSuccess());
   } catch (error) {
-    dispatch(setDeleteArticleFailure(error.isAxiosError));
+    dispatch(setDeleteArticleFailure());
     throw error;
   }
 };
@@ -145,7 +151,7 @@ export const favoriteArticle = (slug) => async (dispatch) => {
     const response = await favoriteArticleRequest(slug);
     dispatch(setFavoriteArticleSuccess(response.data));
   } catch (error) {
-    dispatch(setFavoriteArticleFailure(error.isAxiosError));
+    dispatch(setFavoriteArticleFailure());
   }
 };
 
@@ -155,6 +161,6 @@ export const unfavoriteArticle = (slug) => async (dispatch) => {
     const response = await unfavoriteArticleRequest(slug);
     dispatch(setFavoriteArticleSuccess(response.data));
   } catch (error) {
-    dispatch(setFavoriteArticleFailure(error.isAxiosError));
+    dispatch(setFavoriteArticleFailure());
   }
 };

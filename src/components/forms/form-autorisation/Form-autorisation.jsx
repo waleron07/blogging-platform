@@ -10,6 +10,7 @@ import { getBlockingForm } from '../../../redux/selectors';
 import validationSchema from './vadalition';
 import * as actionsAuthentication from '../../../redux/actions/actionsAuthentication';
 import { getSignup } from '../../../utils/route';
+import { setToken } from '../../../utils/localStorage';
 
 const FormAutorization = ({ authorization, isBlockingForm }) => {
   const classes = useStyles();
@@ -21,7 +22,9 @@ const FormAutorization = ({ authorization, isBlockingForm }) => {
 
   const handleSubmitAutorization = async (values, setFieldError) => {
     try {
-      await authorization(values, setFieldError);
+      const response = await authorization(values, setFieldError);
+      const { token } = response.data.user;
+      setToken(token);
     } catch (error) {
       if (error.response === undefined && error.isAxiosError) {
         setFieldError('errorName', 'Нет подключения к интернету');

@@ -1,7 +1,5 @@
 import { createAction } from 'redux-actions';
 import { loginRequest, signupRequest, userRequest } from '../../api/index';
-import { setToken } from '../../utils/localStorage';
-import { getBlogging, getSignup } from '../../utils/route';
 
 export const setSignUpRequest = createAction('STATUS_SIGNUP_REQUEST');
 export const setSignUpSuccess = createAction('STATUS_SIGNUP_SUCCESS');
@@ -17,15 +15,15 @@ export const setUserFailure = createAction('STATUS_USER_FAILURE');
 
 export const setLoginExit = createAction('LOGIN_EXIT');
 
-export const getUser = (history) => async (dispatch) => {
+export const getUser = () => async (dispatch) => {
   dispatch(setUserRequest());
   try {
     const response = await userRequest();
     dispatch(setUserSuccess(response.data));
-    history.push(getBlogging());
+    return response;
   } catch (error) {
     dispatch(setUserFailure());
-    history.push(getSignup());
+    throw error;
   }
 };
 
@@ -33,9 +31,8 @@ export const authorization = (values) => async (dispatch) => {
   dispatch(setSignUpRequest());
   try {
     const response = await signupRequest(values);
-    const { token } = response.data.user;
-    setToken(token);
-    dispatch(setSignUpSuccess());
+    dispatch(setSignUpSuccess(response.data));
+    return response;
   } catch (error) {
     dispatch(setSignUpFailure());
     throw error;
@@ -47,10 +44,9 @@ export const registration = (values) => async (dispatch) => {
   try {
     const response = await loginRequest(values);
     if (response.status === 200) {
-      const { token } = response.data.user;
-      localStorage.setItem('token', `${token}`);
-      dispatch(setLoginSuccess());
+      dispatch(setLoginSuccess(response.data));
     }
+    return response;
   } catch (error) {
     dispatch(setLoginFailure());
     throw error;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -32,9 +33,15 @@ const App = ({
   const fetchPath = async () => {
     const token = getToken();
     if (token) {
-      await getUser(history);
-      await setLoginSuccess();
-      await getArticles();
+      try {
+        const response = await getUser(history);
+        setLoginSuccess(response.data);
+        getArticles();
+        history.push(getBlogging());
+      } catch (error) {
+        getArticles();
+        history.push(getSignup());
+      }
     } else {
       history.push(getSignup());
       getArticles();
