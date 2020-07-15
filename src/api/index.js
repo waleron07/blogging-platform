@@ -44,6 +44,7 @@ export const signupRequest = (values) => {
       password,
     },
   };
+
   const url = `${baseUrl}users/login`;
   const response = axios.post(url, autData);
   return response;
