@@ -9,6 +9,12 @@ const username = handleActions(
     [actionsAuthentication.setUserSuccess](state, { payload: login }) {
       return login.user.username;
     },
+    [actionsAuthentication.setSignUpSuccess](state, { payload: login }) {
+      return login.user.username;
+    },
+    [actionsAuthentication.setLoginSuccess](state, { payload: login }) {
+      return login.user.username;
+    },
   },
   '',
 );
@@ -42,11 +48,8 @@ const isAuth = handleActions(
 
 const isErrorInternet = handleActions(
   {
-    [actionsArticles.setFavoriteArticleFailure](
-      state,
-      { payload: isAxiosError },
-    ) {
-      return isAxiosError;
+    [actionsArticles.setFavoriteArticleFailure]() {
+      return true;
     },
     [actionsArticles.setFavoriteArticleSuccess]() {
       return false;
@@ -54,17 +57,14 @@ const isErrorInternet = handleActions(
     [actionsArticles.setCreateArticleFailure]() {
       return false;
     },
-    [actionsArticles.setDeleteArticleFailure](
-      state,
-      { payload: isAxiosError },
-    ) {
-      return isAxiosError;
+    [actionsArticles.setDeleteArticleFailure]() {
+      return true;
     },
     [actionsArticles.setDeleteArticleSuccess]() {
       return false;
     },
-    [actionsArticles.setUserArticleFailure](state, { payload: isAxiosError }) {
-      return isAxiosError;
+    [actionsArticles.setUserArticleFailure]() {
+      return true;
     },
     [actionsArticles.setUserArticleSuccess]() {
       return false;
@@ -72,13 +72,13 @@ const isErrorInternet = handleActions(
     [actionsArticles.setCreateArticleSuccess]() {
       return false;
     },
-    [actionsArticles.setArticlesFailure](state, { payload: isAxiosError }) {
-      return isAxiosError;
+    [actionsArticles.setArticlesListFailure]() {
+      return true;
     },
-    [actionsArticles.setArticleFailure](state, { payload: isAxiosError }) {
-      return isAxiosError;
+    [actionsArticles.setArticleFailure]() {
+      return true;
     },
-    [actionsArticles.setArticlesSuccess]() {
+    [actionsArticles.setArticlesListSuccess]() {
       return false;
     },
     [actionsArticles.setArticleSuccess]() {
@@ -123,6 +123,12 @@ const isBlockingForm = handleActions(
     [actionsArticles.setEditArticleSuccess]() {
       return false;
     },
+    [actionsAuthentication.setSignUpSuccess]() {
+      return false;
+    },
+    [actionsAuthentication.setLoginSuccess]() {
+      return false;
+    },
     [actionsArticles.setFavoriteArticleSuccess]() {
       return false;
     },
@@ -153,7 +159,7 @@ const isBlockingForm = handleActions(
 
 const articlesList = handleActions(
   {
-    [actionsArticles.setArticlesSuccess](state, { payload: articles }) {
+    [actionsArticles.setArticlesListSuccess](state, { payload: articles }) {
       return articles;
     },
     [actionsArticles.setUserArticleSuccess](state, { payload: articles }) {
